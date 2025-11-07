@@ -1,9 +1,9 @@
-name: Build Electron App
+name: Build and Release Poker King
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   build:
@@ -11,23 +11,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 18
 
       - name: Install dependencies
         run: npm install
 
       - name: Build app
+        run: npm run build
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npm run build
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload EXE as Release
+        uses: softprops/action-gh-release@v1
         with:
-          name: poker-king-build
-          path: dist/
+          files: dist/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
