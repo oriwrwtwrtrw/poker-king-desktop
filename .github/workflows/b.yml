@@ -1,4 +1,4 @@
-name: Build
+name: Build Electron App
 
 on:
   push:
@@ -10,13 +10,24 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      - run: npm install
-      - run: npm run build
-      - uses: actions/upload-artifact@v4
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: build
+          name: poker-king-build
           path: dist/
